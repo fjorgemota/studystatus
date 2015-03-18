@@ -1,10 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="dataSourceStorageLocal">
-    <data-source name="H2" uuid="0750af2f-671f-4792-a77f-3d0212e204bc">
-      <secret-storage>memory</secret-storage>
-      <first-sync>true</first-sync>
-      <user-name>sa</user-name>
-    </data-source>
-  </component>
-</project>
+<project version="4" />
