@@ -1,4 +1,6 @@
 import db.DBConnection;
+import models.Status;
+import models.Task;
 
 public class StudyStatus {
     private DBConnection dbConn;
@@ -18,6 +20,5 @@ public class StudyStatus {
     }
 
     protected void run() {
-        
     }
 }
