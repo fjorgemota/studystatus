@@ -1,12 +1,11 @@
 package db;
 
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-class Results {
+public class Results {
     private ResultSet rs;
     public Results(ResultSet rs){
         this.rs = rs;
