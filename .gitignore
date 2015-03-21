@@ -1,6 +1,6 @@
 # Ignores the database
 
-db/
+*.db
 
 # User-specific stuff:
 .idea/workspace.xml
