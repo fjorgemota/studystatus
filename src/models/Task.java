@@ -26,11 +26,11 @@ public class Task implements BaseModel {
         return connection.executeUpdate("UPDATE tasks SET title = '" + getTitle() + "', description = '" + getDescription() + "', status = " + this.status + " WHERE id="+this.getId());
     }
 
-    int getId() {
+    public int getId() {
         return this.id;
     }
 
-    void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -87,6 +87,26 @@ public class Task implements BaseModel {
                 progress = 3;
         }
         this.status = progress;
+    }
+
+    public void setStatus(int status) {
+        switch (status) {
+            default:
+            case 0:
+                this.status = 0;
+                break;
+
+            case 1:
+                this.status = 1;
+                break;
+
+            case 2:
+                this.status = 2;
+                break;
+
+            case 3:
+                this.status = 3;
+        }
     }
 
     public Timestamp getCreated_at() {
