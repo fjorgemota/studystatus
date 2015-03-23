@@ -1,6 +1,8 @@
 import db.DBConnection;
 import models.Status;
 import models.Task;
+import views.AddTaskView;
+import views.MainView;
 
 public class StudyStatus {
     private DBConnection dbConn;
@@ -20,5 +22,8 @@ public class StudyStatus {
     }
 
     protected void run() {
+        MainView view = MainView.getInstance();
+        view.setVisible(true);
+
     }
 }

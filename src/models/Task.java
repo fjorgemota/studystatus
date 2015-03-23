@@ -1,6 +1,7 @@
 package models;
 
 import db.DBConnection;
+import services.StatusTransformer;
 
 import java.sql.Timestamp;
 
@@ -18,12 +19,12 @@ public class Task implements BaseModel {
 
     public boolean delete() {
         DBConnection connection = DBConnection.getInstance();
-        return connection.executeDelete("DELETE FROM tasks WHERE id="+getId());
+        return connection.executeDelete("DELETE FROM tasks WHERE id=" + getId());
     }
 
     public boolean update() {
         DBConnection connection = DBConnection.getInstance();
-        return connection.executeUpdate("UPDATE tasks SET title = '" + getTitle() + "', description = '" + getDescription() + "', status = " + this.status + " WHERE id="+this.getId());
+        return connection.executeUpdate("UPDATE tasks SET title = '" + getTitle() + "', description = '" + getDescription() + "', status = " + this.status + " WHERE id=" + this.getId());
     }
 
     public int getId() {
@@ -51,65 +52,18 @@ public class Task implements BaseModel {
     }
 
     public Status getStatus() {
-        switch (this.status) {
-            default:
-            case 0:
-                return Status.NOT_STARTED;
-
-            case 1:
-                return Status.TO_DO;
-
-            case 2:
-                return Status.DONE;
-
-            case 3:
-                return Status.BLOCKED;
-        }
+        return StatusTransformer.intToStatus(this.status);
     }
 
     public void setStatus(Status status) {
-        int progress;
-        switch (status) {
-            default:
-            case NOT_STARTED:
-                progress = 0;
-                break;
-
-            case TO_DO:
-                progress = 1;
-                break;
-
-            case DONE:
-                progress = 2;
-                break;
-
-            case BLOCKED:
-                progress = 3;
-        }
-        this.status = progress;
+        this.status = StatusTransformer.statusToInt(status);
     }
 
     public void setStatus(int status) {
-        switch (status) {
-            default:
-            case 0:
-                this.status = 0;
-                break;
-
-            case 1:
-                this.status = 1;
-                break;
-
-            case 2:
-                this.status = 2;
-                break;
-
-            case 3:
-                this.status = 3;
-        }
+        this.status = status;
     }
 
-    public Timestamp getCreated_at() {
+    public Timestamp getCreatedAt() {
         return created_at;
     }
 

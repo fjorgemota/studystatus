@@ -2,12 +2,18 @@ package repositories;
 
 import db.DBConnection;
 import db.Results;
+import models.Status;
 import models.Task;
+import services.StatusTransformer;
+
 import java.util.ArrayList;
 
 public class TaskRepository {
 
-    private Task result_to_task(Results result) {
+    private Task resultToTask(Results result) {
+        if (!result.next()) {
+            return null;
+        }
         Task task = new Task();
         task.setId(result.getInt("id"));
         task.setTitle(result.getString("title"));
@@ -17,53 +23,48 @@ public class TaskRepository {
         return task;
     }
 
-    public Task findTaskId(int id_request) {
-        DBConnection search = DBConnection.getInstance();
-        Results result = search.executeSelect("SELECT * FROM tasks WHERE id="+id_request);
-        if (!result.next()) {
-            return null;
-        }
-        Task target = this.result_to_task(result);
-        return target;
-    }
-
-    public ArrayList<Task> findTaskTitle(String title_request) {
-        DBConnection search = DBConnection.getInstance();
-        Results result = search.executeSelect("SELECT * FROM tasks WHERE title='"+title_request+"'");
+    private ArrayList<Task> resultsToTasks(Results result) {
         ArrayList<Task> tasks = new ArrayList<Task>();
-        while (result.next()) {
-            tasks.add(this.result_to_task(result));
+        Task task;
+        while ((task = this.resultToTask(result)) != null) {
+            tasks.add(task);
         }
         return tasks;
     }
 
-    public ArrayList<Task> findTaskDescription(String description_request) {
+    public Task findById(int id) {
         DBConnection search = DBConnection.getInstance();
-        Results result = search.executeSelect("SELECT * FROM tasks WHERE description='"+ description_request+"'");
-        ArrayList<Task> tasks = new ArrayList<Task>();
-        while (result.next()) {
-            tasks.add(this.result_to_task(result));
-        }
-        return tasks;
+        Results result = search.executeSelect("SELECT * FROM tasks WHERE id="+id);
+        return this.resultToTask(result);
     }
 
-    public ArrayList<Task> findTaskStatus(int status_request) {
+    public ArrayList<Task> findByTitle(String title) {
         DBConnection search = DBConnection.getInstance();
-        Results result = search.executeSelect("SELECT * FROM tasks WHERE status="+status_request);
-        ArrayList<Task> tasks = new ArrayList<Task>();
-        while (result.next()) {
-            tasks.add(this.result_to_task(result));
-        }
-        return tasks;
+        Results result = search.executeSelect("SELECT * FROM tasks WHERE title='"+title+"'");
+        return this.resultsToTasks(result);
+    }
+
+    public ArrayList<Task> findByDescription(String description) {
+        DBConnection search = DBConnection.getInstance();
+        Results result = search.executeSelect("SELECT * FROM tasks WHERE description='"+ description+"'");
+        return this.resultsToTasks(result);
+    }
+
+    public ArrayList<Task> findByStatus(int status) {
+        DBConnection search = DBConnection.getInstance();
+        Results result = search.executeSelect("SELECT * FROM tasks WHERE status="+status);
+        return this.resultsToTasks(result);
+    }
+
+    public ArrayList<Task> findByStatus(Status status) {
+        DBConnection search = DBConnection.getInstance();
+        Results result = search.executeSelect("SELECT * FROM tasks WHERE status="+ StatusTransformer.statusToInt(status));
+        return this.resultsToTasks(result);
     }
 
     public ArrayList<Task> findAll() {
         DBConnection search = DBConnection.getInstance();
         Results result = search.executeSelect("SELECT * FROM tasks");
-        ArrayList<Task> tasks = new ArrayList<Task>();
-        while (result.next()) {
-            tasks.add(this.result_to_task(result));
-        }
-        return tasks;
+        return this.resultsToTasks(result);
     }
 }

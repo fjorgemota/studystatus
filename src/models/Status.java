@@ -2,7 +2,7 @@ package models;
 
 public enum Status {
     NOT_STARTED,
-    TO_DO,
+    DOING,
     DONE,
-    BLOCKED;
+    STOPPED;
 }
