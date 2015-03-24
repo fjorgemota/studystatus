@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * Created by aluno on 18/03/15.
@@ -40,8 +41,7 @@ public class AddTaskView extends RenderableView implements ActionListener {
     }
 
     protected void renderTitle() {
-        //Campo Titulo
-        JLabel titleLabel = new JLabel("Titulo:");
+        JLabel titleLabel = new JLabel("Title:");
         titleLabel.setBounds(10, 10, 100, 30);
         this.titleField = new JTextField();
         this.titleField.setBounds(120, 10, 300, 30);
@@ -50,15 +50,14 @@ public class AddTaskView extends RenderableView implements ActionListener {
     }
 
     protected void renderDescription() {
-        //Campo Descrição
-        JLabel descriptionLabel = new JLabel("Descrição:");
+        JLabel descriptionLabel = new JLabel("Description:");
         descriptionLabel.setBounds(10, 50, 100, 30);
         this.descriptionField = new JScrollPane(
-                new JTextArea(),
+                new JTextArea(5, 60),
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
         );
-        this.descriptionField.setBounds(120, 50, 300, 30);
+        this.descriptionField.setBounds(120, 50, 300, 100);
         this.add(descriptionLabel);
         this.add(this.descriptionField);
     }
@@ -66,16 +65,25 @@ public class AddTaskView extends RenderableView implements ActionListener {
     protected void renderStatus() {
         //Campo Status
         JLabel statusLabel = new JLabel("Status:");
-        statusLabel.setBounds(10, 90, 100, 30);
-        this.statusField = new JComboBox<String>(new String[]{"Não iniciado", "Em progresso", "Concluido", "Bloqueado"});
-        this.statusField.setBounds(120, 90, 300, 30);
+        statusLabel.setBounds(10, 160, 100, 30);
+
+        ArrayList<Status> statuses = new ArrayList<Status>();
+        statuses.add(Status.NOT_STARTED);
+        statuses.add(Status.DOING);
+        statuses.add(Status.DONE);
+        statuses.add(Status.STOPPED);
+        this.statusField = new JComboBox<String>();
+        for(Status status: statuses) {
+            this.statusField.addItem(StatusTransformer.statusToString(status));
+        }
+        this.statusField.setBounds(120, 160, 300, 30);
         this.add(statusLabel);
         this.add(this.statusField);
     }
 
     protected void renderSubmit() {
-        JButton button = new JButton("Salvar");
-        button.setLocation(10, 130);
+        JButton button = new JButton("Save");
+        button.setLocation(10, 200);
         button.setSize(new Dimension(100, 30));
         button.setActionCommand(SAVE);
         button.addActionListener(this);
@@ -83,8 +91,8 @@ public class AddTaskView extends RenderableView implements ActionListener {
     }
 
     protected void renderCancel() {
-        JButton button = new JButton("Cancelar");
-        button.setLocation(120, 130);
+        JButton button = new JButton("Cancel");
+        button.setLocation(120, 200);
         button.setSize(new Dimension(100, 30));
         button.setActionCommand(CANCEL);
         button.addActionListener(this);
@@ -118,10 +126,10 @@ public class AddTaskView extends RenderableView implements ActionListener {
         if (command.equals(SAVE)) {
             Task task = this.getTask();
             if (task.insert()) {
-                JOptionPane.showMessageDialog(null, "Tarefa '"+this.getTitle()+"' inserida com sucesso! :D");
+                JOptionPane.showMessageDialog(null, "Task '"+this.getTitle()+"' inserted successfully! :D");
                 MainView.getInstance().setContentPane(new KanbanView());
             } else {
-                JOptionPane.showMessageDialog(null, "Houve um erro durante a inserção da tarefa '"+this.getTitle()+"'! :(");
+                JOptionPane.showMessageDialog(null, "There is an error in the insertion of the task '"+this.getTitle()+"'! :(");
             }
         } else if (command.equals(CANCEL)) {
             MainView.getInstance().setContentPane(new KanbanView());

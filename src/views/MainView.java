@@ -22,7 +22,8 @@ public class MainView extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("StudyStatus");
         this.setJMenuBar(new MenuBarView());
-        this.setSize(1000, 800);
+        this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        this.setMinimumSize(new Dimension(200, 200));
         this.setContentPane(new KanbanView());
     }
 

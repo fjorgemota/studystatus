@@ -4,6 +4,7 @@ import models.Status;
 import repositories.TaskRepository;
 import services.StatusTransformer;
 
+import javax.smartcardio.Card;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -35,25 +36,27 @@ public class KanbanView extends RenderableView {
     public void render(){
         this.removeAll();
         JPanel contentView = new JPanel();
-        contentView.setLayout(new GridBagLayout());
+        GroupLayout layout = new GroupLayout(contentView);
+        contentView.setLayout(layout);
         JScrollPane pane = new JScrollPane(
                 contentView,
                 JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridy = 0;
-        constraints.gridheight = 1;
-        constraints.fill = GridBagConstraints.BOTH;
+        GroupLayout.SequentialGroup seqh = layout.createSequentialGroup();
+        GroupLayout.ParallelGroup seqv = layout.createParallelGroup();
+
         int count = 0;
         for(Status status: this.columns) {
             ColumnView view = new ColumnView(status, this.repository);
             view.setPreferredSize(new Dimension(COLUMN_WIDTH, this.getHeight()));
-            constraints.gridx = count;
-            contentView.add(view, constraints);
+            seqh.addComponent(view);
+            seqv.addComponent(view);
             view.render();
             count++;
         }
+        layout.setHorizontalGroup(seqh);
+        layout.setVerticalGroup(seqv);
         this.add(pane);
         this.revalidate();
         this.repaint();

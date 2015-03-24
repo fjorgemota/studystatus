@@ -31,20 +31,24 @@ public class ColumnView extends RenderableView {
 
     public void render(){
         this.removeAll();
-        this.setLayout(new GridBagLayout());
-        GridBagConstraints cconstraints = new GridBagConstraints();
-        cconstraints.gridx = 0;
-        cconstraints.anchor = GridBagConstraints.NORTHWEST;
-        cconstraints.gridwidth = 1;
-        cconstraints.fill = GridBagConstraints.BOTH;
+        GroupLayout columnLayout = new GroupLayout(this);
+        this.setLayout(columnLayout);
+
+        GroupLayout.SequentialGroup cseqv = columnLayout.createSequentialGroup();
+        GroupLayout.ParallelGroup cseqh = columnLayout.createParallelGroup();
+
+
         JLabel title = new JLabel();
         title.setText(StatusTransformer.statusToString(this.statusFilter));
         title.setLocation(HORIZONTAL_MARGIN, 10);
         title.setPreferredSize(new Dimension(this.getWidth() - (HORIZONTAL_MARGIN * 2), 25));
-        cconstraints.gridy = 0;
-        this.add(title, cconstraints);
+
+        cseqv.addComponent(title);
+        cseqh.addComponent(title);
+
         JPanel contentView = new JPanel();
-        contentView.setLayout(new GridBagLayout());
+        GroupLayout layout = new GroupLayout(contentView);
+        contentView.setLayout(layout);
         JScrollPane pane = new JScrollPane(
                 contentView,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -54,22 +58,24 @@ public class ColumnView extends RenderableView {
         pane.setPreferredSize(new Dimension(this.getWidth() - (HORIZONTAL_MARGIN * 2), this.getHeight() - 40));
         ArrayList<Task> tasks = this.repository.findByStatus(this.statusFilter);
         int count = 1;
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridwidth = 1;
-        constraints.fill = GridBagConstraints.VERTICAL;
-        constraints.anchor = GridBagConstraints.NORTH;
-        constraints.weighty = 1;
+        GroupLayout.SequentialGroup seqv = layout.createSequentialGroup();
+        GroupLayout.ParallelGroup seqh = layout.createParallelGroup();
         for(Task task: tasks) {
             TaskView view = new TaskView(task);
             view.setBorder(new LineBorder(Color.BLACK));
-            view.setPreferredSize(new Dimension(this.getWidth() - (HORIZONTAL_MARGIN * 2), CARD_HEIGHT));
-            constraints.gridy = count;
-            contentView.add(view, constraints);
+            view.setPreferredSize(new Dimension(this.getWidth(), CARD_HEIGHT));
+            seqv.addComponent(view, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+                    GroupLayout.PREFERRED_SIZE);
+            seqh.addComponent(view, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+                    GroupLayout.PREFERRED_SIZE);
             count++;
         }
-        cconstraints.gridy = 1;
-        this.add(pane, cconstraints);
+        layout.setHorizontalGroup(seqh);
+        layout.setVerticalGroup(seqv);
+        cseqv.addComponent(pane);
+        cseqh.addComponent(pane);
+        columnLayout.setVerticalGroup(cseqv);
+        columnLayout.setHorizontalGroup(cseqh);
         this.revalidate();
         this.repaint();
     }
