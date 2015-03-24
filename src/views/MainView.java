@@ -20,9 +20,9 @@ public class MainView extends JFrame {
 
     private MainView() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        this.setTitle("StudyStatus");
         this.setJMenuBar(new MenuBarView());
-        this.setSize(1000, 400);
+        this.setSize(1000, 800);
         this.setContentPane(new KanbanView());
     }
 
@@ -34,7 +34,6 @@ public class MainView extends JFrame {
 
     public void repaint() {
         RenderableView view = (RenderableView) this.getContentPane();
-        view.setBounds(0, 0, this.getWidth(), this.getHeight());
         view.render();
     }
 }

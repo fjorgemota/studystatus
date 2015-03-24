@@ -2,6 +2,7 @@ package views;
 
 import models.Status;
 import repositories.TaskRepository;
+import services.StatusTransformer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,18 +35,22 @@ public class KanbanView extends RenderableView {
     public void render(){
         this.removeAll();
         JPanel contentView = new JPanel();
-        contentView.setLayout(new BorderLayout());
+        contentView.setLayout(new GridBagLayout());
         JScrollPane pane = new JScrollPane(
                 contentView,
                 JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridy = 0;
+        constraints.gridheight = 1;
+        constraints.fill = GridBagConstraints.BOTH;
         int count = 0;
         for(Status status: this.columns) {
             ColumnView view = new ColumnView(status, this.repository);
-            view.setBounds((COLUMN_WIDTH*count)+(5*count), 5, COLUMN_WIDTH, this.getHeight());
-            view.setLayout(new FlowLayout());
-            contentView.add(view);
+            view.setPreferredSize(new Dimension(COLUMN_WIDTH, this.getHeight()));
+            constraints.gridx = count;
+            contentView.add(view, constraints);
             view.render();
             count++;
         }

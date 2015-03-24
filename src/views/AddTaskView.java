@@ -5,6 +5,7 @@ import models.Task;
 import services.StatusTransformer;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,13 +13,30 @@ import java.awt.event.ActionListener;
  * Created by aluno on 18/03/15.
  */
 public class AddTaskView extends RenderableView implements ActionListener {
-    protected JTextField titleField, descriptionField;
+    private final String SAVE = "SAVE";
+    private final String CANCEL = "CANCEL";
+
+    protected JTextField titleField;
+    protected JScrollPane descriptionField;
     protected JComboBox statusField;
+    protected boolean rendered = false;
 
     public void render() {
+        if (this.rendered) {
+            this.revalidate();
+            this.repaint();
+            return;
+        }
+        this.removeAll();
+        this.setLayout(null);
         this.renderTitle();
         this.renderDescription();
         this.renderStatus();
+        this.renderSubmit();
+        this.renderCancel();
+        this.revalidate();
+        this.repaint();
+        this.rendered = true;
     }
 
     protected void renderTitle() {
@@ -35,7 +53,11 @@ public class AddTaskView extends RenderableView implements ActionListener {
         //Campo Descrição
         JLabel descriptionLabel = new JLabel("Descrição:");
         descriptionLabel.setBounds(10, 50, 100, 30);
-        this.descriptionField = new JTextField();
+        this.descriptionField = new JScrollPane(
+                new JTextArea(),
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        );
         this.descriptionField.setBounds(120, 50, 300, 30);
         this.add(descriptionLabel);
         this.add(this.descriptionField);
@@ -51,6 +73,24 @@ public class AddTaskView extends RenderableView implements ActionListener {
         this.add(this.statusField);
     }
 
+    protected void renderSubmit() {
+        JButton button = new JButton("Salvar");
+        button.setLocation(10, 130);
+        button.setSize(new Dimension(100, 30));
+        button.setActionCommand(SAVE);
+        button.addActionListener(this);
+        this.add(button);
+    }
+
+    protected void renderCancel() {
+        JButton button = new JButton("Cancelar");
+        button.setLocation(120, 130);
+        button.setSize(new Dimension(100, 30));
+        button.setActionCommand(CANCEL);
+        button.addActionListener(this);
+        this.add(button);
+    }
+
     protected Status getStatus() {
         return StatusTransformer.intToStatus(this.statusField.getSelectedIndex());
     }
@@ -60,7 +100,7 @@ public class AddTaskView extends RenderableView implements ActionListener {
     }
 
     protected String getDescription(){
-        return this.descriptionField.getText();
+        return ((JTextArea) this.descriptionField.getViewport().getView()).getText();
     }
 
     protected Task getTask(){
@@ -74,14 +114,17 @@ public class AddTaskView extends RenderableView implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("save")) {
+        String command = e.getActionCommand();
+        if (command.equals(SAVE)) {
             Task task = this.getTask();
             if (task.insert()) {
                 JOptionPane.showMessageDialog(null, "Tarefa '"+this.getTitle()+"' inserida com sucesso! :D");
+                MainView.getInstance().setContentPane(new KanbanView());
             } else {
                 JOptionPane.showMessageDialog(null, "Houve um erro durante a inserção da tarefa '"+this.getTitle()+"'! :(");
             }
-        } else if (e.getActionCommand().equals("cancel")) {
+        } else if (command.equals(CANCEL)) {
+            MainView.getInstance().setContentPane(new KanbanView());
         }
     }
 }

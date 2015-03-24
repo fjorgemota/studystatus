@@ -20,7 +20,7 @@ public class TaskView extends RenderableView {
         this.add(title);
         JLabel description = new JLabel();
         String ds = this.task.getDescription();
-        description.setText(ds.substring(0, 30)+(ds.length() > 30? "...": ""));
+        description.setText((ds.length() > 30) ? ds.substring(0, 30)+"...": ds);
         title.setBounds(HORIZONTAL_MARGIN, 25, this.getWidth()-(HORIZONTAL_MARGIN*2), 30);
         this.add(description);
     }
