@@ -4,16 +4,22 @@ import models.Status;
 import models.Task;
 import repositories.TaskRepository;
 import services.StatusTransformer;
+import views.events.DropTargetListener;
+import views.events.TransferableTask;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
 import java.util.ArrayList;
 
 /**
  * Created by fernando on 21/03/15.
  */
-public class ColumnView extends RenderableView {
+public class ColumnView extends RenderableView implements DragGestureListener {
     private final int CARD_HEIGHT = 120;
     private final int HORIZONTAL_MARGIN = 5;
     private Status statusFilter;
@@ -33,6 +39,9 @@ public class ColumnView extends RenderableView {
         this.removeAll();
         GroupLayout columnLayout = new GroupLayout(this);
         this.setLayout(columnLayout);
+        new DropTargetListener(this);
+
+
 
         GroupLayout.SequentialGroup cseqv = columnLayout.createSequentialGroup();
         GroupLayout.ParallelGroup cseqh = columnLayout.createParallelGroup();
@@ -68,6 +77,8 @@ public class ColumnView extends RenderableView {
                     GroupLayout.PREFERRED_SIZE);
             seqh.addComponent(view, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
                     GroupLayout.PREFERRED_SIZE);
+            DragSource ds = new DragSource();
+            ds.createDefaultDragGestureRecognizer(view, DnDConstants.ACTION_MOVE, this);
             count++;
         }
         layout.setHorizontalGroup(seqh);
@@ -78,6 +89,22 @@ public class ColumnView extends RenderableView {
         columnLayout.setHorizontalGroup(cseqh);
         this.revalidate();
         this.repaint();
+    }
+
+    public Status getStatus() {
+        return this.statusFilter;
+    }
+
+    @Override
+    public void dragGestureRecognized(DragGestureEvent event) {
+        Cursor cursor = null;
+        TaskView panel = (TaskView) event.getComponent();
+
+        Task task = panel.getTask();
+        if (event.getDragAction() == DnDConstants.ACTION_MOVE) {
+            cursor = DragSource.DefaultMoveDrop;
+        }
+        event.startDrag(cursor, new TransferableTask(task));
     }
 }
 
