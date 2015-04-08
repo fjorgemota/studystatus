@@ -1,7 +1,7 @@
 package views;
 
-import com.sun.xml.internal.bind.v2.model.runtime.RuntimeNonElement;
 import models.Task;
+import views.forms.EditTaskView;
 
 import javax.swing.*;
 import java.awt.*;

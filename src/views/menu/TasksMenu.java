@@ -1,6 +1,6 @@
 package views.menu;
 
-import views.AddTaskView;
+import views.forms.AddTaskView;
 import views.MainView;
 
 import javax.swing.*;
