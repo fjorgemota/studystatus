@@ -1,6 +1,8 @@
-package views;
+package views.kanban;
 
 import models.Task;
+import views.MainView;
+import views.RenderableView;
 import views.forms.EditTaskView;
 
 import javax.swing.*;

@@ -2,15 +2,13 @@ package views.forms;
 
 import models.Status;
 import models.Task;
-import org.h2.command.dml.Delete;
 import services.StatusTransformer;
-import views.KanbanView;
+import views.kanban.KanbanView;
 import views.MainView;
 import views.RenderableView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;

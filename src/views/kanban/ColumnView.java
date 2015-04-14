@@ -1,9 +1,10 @@
-package views;
+package views.kanban;
 
 import models.Status;
 import models.Task;
 import repositories.TaskRepository;
 import services.StatusTransformer;
+import views.RenderableView;
 import views.events.DropTargetListener;
 import views.events.TransferableTask;
 
@@ -66,7 +67,6 @@ public class ColumnView extends RenderableView implements DragGestureListener {
         pane.setLocation(HORIZONTAL_MARGIN, 30);
         pane.setPreferredSize(new Dimension(this.getWidth() - (HORIZONTAL_MARGIN * 2), this.getHeight() - 40));
         ArrayList<Task> tasks = this.repository.findByStatus(this.statusFilter);
-        int count = 1;
         GroupLayout.SequentialGroup seqv = layout.createSequentialGroup();
         GroupLayout.ParallelGroup seqh = layout.createParallelGroup();
         for(Task task: tasks) {
@@ -79,7 +79,6 @@ public class ColumnView extends RenderableView implements DragGestureListener {
                     GroupLayout.PREFERRED_SIZE);
             DragSource ds = new DragSource();
             ds.createDefaultDragGestureRecognizer(view, DnDConstants.ACTION_MOVE, this);
-            count++;
         }
         layout.setHorizontalGroup(seqh);
         layout.setVerticalGroup(seqv);

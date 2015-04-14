@@ -1,10 +1,9 @@
-package views;
+package views.kanban;
 
 import models.Status;
 import repositories.TaskRepository;
-import services.StatusTransformer;
+import views.RenderableView;
 
-import javax.smartcardio.Card;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -46,14 +45,12 @@ public class KanbanView extends RenderableView {
         GroupLayout.SequentialGroup seqh = layout.createSequentialGroup();
         GroupLayout.ParallelGroup seqv = layout.createParallelGroup();
 
-        int count = 0;
         for(Status status: this.columns) {
             ColumnView view = new ColumnView(status, this.repository);
             view.setPreferredSize(new Dimension(COLUMN_WIDTH, this.getHeight()));
             seqh.addComponent(view);
             seqv.addComponent(view);
             view.render();
-            count++;
         }
         layout.setHorizontalGroup(seqh);
         layout.setVerticalGroup(seqv);

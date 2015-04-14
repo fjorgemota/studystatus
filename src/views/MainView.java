@@ -1,5 +1,6 @@
 package views;
 
+import views.kanban.KanbanView;
 import views.menu.MenuBarView;
 
 import javax.swing.*;

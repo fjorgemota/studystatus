@@ -3,7 +3,7 @@ package views.forms;
 import models.Status;
 import models.Task;
 import services.StatusTransformer;
-import views.KanbanView;
+import views.kanban.KanbanView;
 import views.MainView;
 import views.RenderableView;
 

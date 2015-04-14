@@ -1,12 +1,10 @@
 package views.events;
 
 import models.Task;
-import views.ColumnView;
-import views.KanbanView;
+import views.kanban.ColumnView;
 import views.MainView;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
