@@ -2,6 +2,7 @@ package views.forms;
 
 import models.Status;
 import models.Task;
+import models.TaskComment;
 import services.StatusTransformer;
 import views.kanban.KanbanView;
 import views.MainView;
@@ -21,10 +22,12 @@ public class EditTaskView extends RenderableView implements ActionListener {
     private final String CANCEL = "CANCEL";
     private final String DELETE = "DELETE";
     private Task task;
+    private TaskComment taskComment;
 
     protected JTextField titleField;
     protected JScrollPane descriptionField;
     protected JComboBox statusField;
+    protected JScrollPane commentField;
     protected boolean rendered = false;
 
     public EditTaskView(Task task) {
@@ -46,6 +49,7 @@ public class EditTaskView extends RenderableView implements ActionListener {
         this.renderSubmit();
         this.renderCancel();
         this.renderDelete();
+        //this.renderComment();
         this.revalidate();
         this.repaint();
         this.rendered = true;
@@ -121,6 +125,36 @@ public class EditTaskView extends RenderableView implements ActionListener {
         button.setActionCommand(DELETE);
         button.addActionListener(this);
         this.add(button);
+    }
+
+    protected void renderComment() {
+        JLabel commentLabel = new JLabel("Comment");
+        commentLabel.setBounds(10, 1000, 100, 30);
+        JTextArea textArea = new JTextArea(5, 60);
+        this.commentField = new JScrollPane(
+                textArea,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        );
+        this.commentField.setBounds(120, 1200, 300, 30);
+
+        JPanel panel = new JPanel();
+        GroupLayout layout = new GroupLayout(panel);
+        GroupLayout.SequentialGroup vertical = layout.createSequentialGroup();
+        GroupLayout.ParallelGroup horizontal = layout.createParallelGroup();
+
+        JTextField userOutputField = new JTextField();
+        userOutputField.setEditable(false);
+        vertical.addComponent(userOutputField);
+        horizontal.addComponent(userOutputField);
+        userOutputField.setBounds(120, 1400, 300, 30);
+
+        vertical.addComponent(commentField);
+        horizontal.addComponent(commentField);
+
+        panel.add(textArea);
+        panel.add(commentField);
+        panel.add(userOutputField);
     }
 
     protected Status getStatus() {
