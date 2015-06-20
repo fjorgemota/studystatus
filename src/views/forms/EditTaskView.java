@@ -3,6 +3,7 @@ package views.forms;
 import models.Status;
 import models.Task;
 import models.TaskComment;
+import repositories.TaskCommentRepository;
 import services.StatusTransformer;
 import views.kanban.KanbanView;
 import views.MainView;
@@ -21,6 +22,7 @@ public class EditTaskView extends RenderableView implements ActionListener {
     private final String SAVE = "SAVE";
     private final String CANCEL = "CANCEL";
     private final String DELETE = "DELETE";
+    private final String COMMENT = "COMMENT";
     private Task task;
     private TaskComment taskComment;
 
@@ -28,6 +30,7 @@ public class EditTaskView extends RenderableView implements ActionListener {
     protected JScrollPane descriptionField;
     protected JComboBox statusField;
     protected JScrollPane commentField;
+    protected JScrollPane commentsContainer;
     protected boolean rendered = false;
 
     public EditTaskView(Task task) {
@@ -49,7 +52,7 @@ public class EditTaskView extends RenderableView implements ActionListener {
         this.renderSubmit();
         this.renderCancel();
         this.renderDelete();
-        //this.renderComment();
+        this.renderComment();
         this.revalidate();
         this.repaint();
         this.rendered = true;
@@ -75,6 +78,7 @@ public class EditTaskView extends RenderableView implements ActionListener {
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
         );
+        textArea.setLineWrap(true);
         this.descriptionField.setBounds(120, 50, 300, 100);
         this.add(descriptionLabel);
         this.add(this.descriptionField);
@@ -129,32 +133,69 @@ public class EditTaskView extends RenderableView implements ActionListener {
 
     protected void renderComment() {
         JLabel commentLabel = new JLabel("Comment");
-        commentLabel.setBounds(10, 1000, 100, 30);
-        JTextArea textArea = new JTextArea(5, 60);
+        commentLabel.setBounds(10, 275, 100, 30);
+        JTextArea textArea = new JTextArea(2, 60);
         this.commentField = new JScrollPane(
                 textArea,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
         );
-        this.commentField.setBounds(120, 1200, 300, 30);
+        textArea.setLineWrap(true);
+        this.commentField.setBounds(120, 275, 300, 50);
+        this.add(commentLabel);
+        this.add(this.commentField);
 
-        JPanel panel = new JPanel();
-        GroupLayout layout = new GroupLayout(panel);
-        GroupLayout.SequentialGroup vertical = layout.createSequentialGroup();
-        GroupLayout.ParallelGroup horizontal = layout.createParallelGroup();
+        JButton button = new JButton("Comment");
+        button.setBounds(450, 275, 100, 50);
+        button.setActionCommand(COMMENT);
+        button.addActionListener(this);
+        this.add(button);
 
-        JTextField userOutputField = new JTextField();
-        userOutputField.setEditable(false);
-        vertical.addComponent(userOutputField);
-        horizontal.addComponent(userOutputField);
-        userOutputField.setBounds(120, 1400, 300, 30);
+        JLabel commentTitle = new JLabel("Comentários:");
+        commentTitle.setFont(commentTitle.getFont().deriveFont(Font.BOLD, 32));
+        commentTitle.setBounds(120, 350, 300, 50);
+        this.add(commentTitle);
 
-        vertical.addComponent(commentField);
-        horizontal.addComponent(commentField);
+        JPanel commentsPanel = new JPanel();
+        this.commentsContainer = new JScrollPane(
+                commentsPanel,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        );
+        this.commentsContainer.setBounds(120, 400, 300, 200);
+        GroupLayout layout = new GroupLayout(commentsPanel);
+        commentsPanel.setLayout(layout);
+        GroupLayout.SequentialGroup horizontal = layout.createSequentialGroup();
+        GroupLayout.ParallelGroup vertical = layout.createParallelGroup();
+        layout.setHorizontalGroup(vertical);
+        layout.setVerticalGroup(horizontal);
 
-        panel.add(textArea);
-        panel.add(commentField);
-        panel.add(userOutputField);
+        TaskCommentRepository repository = new TaskCommentRepository();
+        ArrayList<TaskComment> comments = repository.findByTask(this.task);
+
+
+
+
+        for(TaskComment comment: comments) {
+            JPanel commentPanel = new JPanel();
+            commentPanel.setSize(300, 200);
+            JTextArea commentText = new JTextArea(comment.getComment());
+            commentText.setLocation(5, 5);
+            commentText.setMaximumSize(new Dimension(300, 180));
+            commentText.setOpaque(false);
+            commentText.setBorder(null);
+            commentText.setLineWrap(true);
+
+
+            JLabel commentId = new JLabel("#"+comment.getId());
+            commentId.setLocation(5, 5);
+            commentId.setSize(20, 10);
+            commentPanel.add(commentText);
+            commentPanel.add(commentId);
+            vertical.addComponent(commentPanel);
+            horizontal.addComponent(commentPanel);
+        }
+        this.add(this.commentsContainer);
     }
 
     protected Status getStatus() {
@@ -167,6 +208,11 @@ public class EditTaskView extends RenderableView implements ActionListener {
 
     protected String getDescription(){
         return ((JTextArea) this.descriptionField.getViewport().getView()).getText();
+    }
+
+
+    protected String getComment(){
+        return ((JTextArea) this.commentField.getViewport().getView()).getText();
     }
 
     @Override
@@ -192,6 +238,16 @@ public class EditTaskView extends RenderableView implements ActionListener {
                 } else {
                     JOptionPane.showMessageDialog(null, "There is an error in the delete of the task '"+this.getTitle()+"'! :(");
                 }
+            }
+        } else if (command.equals(COMMENT)) {
+            TaskComment comment = new TaskComment();
+            comment.setTaskId(this.task.getId());
+            comment.setComment(this.getComment());
+            if (comment.insert()) {
+                JOptionPane.showMessageDialog(null, "Comment inserted successfully! :D");
+                MainView.getInstance().setContentPane(new EditTaskView(this.task));
+            } else {
+                JOptionPane.showMessageDialog(null, "There is an error in the insertion of the comment! :(");
             }
 
         }

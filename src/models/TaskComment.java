@@ -30,8 +30,8 @@ public class TaskComment implements BaseModel {
 		this.comment = comment;
 	}
 
-	public void setTask(Task task) {
-		this.task_id = task.getId();
+	public void setTaskId(int task_id) {
+		this.task_id = task_id;
 	}
 
 	public int getTaskId() {
