@@ -41,7 +41,6 @@ public class BurndownGraphView extends RenderableView {
         g.drawLine(50, 30, 50, (max*height)+30);
 
         for (int i=0; i < counts.size(); i++) {
-            System.out.println(counts.get(i));
             g.drawString(""+counts.get(i), 20, (this.getHeight()-30)-(counts.get(i)*height));
         }
         int width = this.getWidth();
