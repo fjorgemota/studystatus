@@ -8,5 +8,6 @@ import javax.swing.*;
 public class MenuBarView extends JMenuBar {
     public MenuBarView() {
         this.add(new TasksMenu());
+        this.add(new ReportsMenu());
     }
 }
