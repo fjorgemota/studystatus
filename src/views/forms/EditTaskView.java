@@ -11,21 +11,19 @@ import views.RenderableView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 
-/**
- * Created by aluno on 18/03/15.
- */
-public class EditTaskView extends RenderableView implements ActionListener {
+public class EditTaskView extends RenderableView implements ActionListener, MouseListener {
     private final String SAVE = "SAVE";
     private final String CANCEL = "CANCEL";
     private final String DELETE = "DELETE";
     private final String COMMENT = "COMMENT";
+    private final String DELETE_COMMENT = "DELETE_COMMENT";
+    private final String UPDATE_COMMENT = "UPDATE_COMMENT";
     private Task task;
     private TaskComment taskComment;
+    private boolean select;
 
     protected JTextField titleField;
     protected JScrollPane descriptionField;
@@ -152,12 +150,24 @@ public class EditTaskView extends RenderableView implements ActionListener {
         button.addActionListener(this);
         this.add(button);
 
-        JLabel commentTitle = new JLabel("Comentários:");
+        JButton deleteButton = new JButton("Delete");
+        deleteButton.setBounds(450, 450, 100, 50);
+        deleteButton.setActionCommand(DELETE_COMMENT);
+        deleteButton.addActionListener(this);
+        this.add(deleteButton);
+
+        JButton updateButton = new JButton("Update");
+        updateButton.setBounds(450, 500, 100, 50);
+        updateButton.setActionCommand(UPDATE_COMMENT);
+        updateButton.addActionListener(this);
+        this.add(updateButton);
+
+        JLabel commentTitle = new JLabel("Commentaries:");
         commentTitle.setFont(commentTitle.getFont().deriveFont(Font.BOLD, 32));
         commentTitle.setBounds(120, 350, 300, 50);
         this.add(commentTitle);
 
-        JPanel commentsPanel = new JPanel();
+        final JPanel commentsPanel = new JPanel();
         this.commentsContainer = new JScrollPane(
                 commentsPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -174,9 +184,6 @@ public class EditTaskView extends RenderableView implements ActionListener {
         TaskCommentRepository repository = new TaskCommentRepository();
         ArrayList<TaskComment> comments = repository.findByTask(this.task);
 
-
-
-
         for(TaskComment comment: comments) {
             JPanel commentPanel = new JPanel();
             commentPanel.setSize(300, 200);
@@ -186,7 +193,6 @@ public class EditTaskView extends RenderableView implements ActionListener {
             commentText.setOpaque(false);
             commentText.setBorder(null);
             commentText.setLineWrap(true);
-
 
             JLabel commentId = new JLabel("#"+comment.getId());
             commentId.setLocation(5, 5);
@@ -250,7 +256,6 @@ public class EditTaskView extends RenderableView implements ActionListener {
             } else {
                 JOptionPane.showMessageDialog(null, "There is an error in the insertion of the comment! :(");
             }
-
         }
     }
 }
