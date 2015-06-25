@@ -265,7 +265,7 @@ public class EditTaskView extends RenderableView implements ActionListener, Mous
                     JOptionPane.showMessageDialog(null, "Comment was deleted successfully!");
                     this.comment = null;
                     this.commentPanel = null;
-                    MainView.getInstance().setContentPane(new EditTaskView(this.task));
+                    MainView.getInstance().setContentPane(new KanbanView());
                 } else {
                     JOptionPane.showMessageDialog(null, "There is an error in the delete of the comment!");
                 }
