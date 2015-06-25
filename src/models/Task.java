@@ -3,7 +3,7 @@ package models;
 import db.DBConnection;
 import services.StatusTransformer;
 
-import java.util.Date;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Task implements BaseModel {
@@ -12,11 +12,11 @@ public class Task implements BaseModel {
     private String title;
     private int status;
     private Timestamp created_at;
-    private Timestamp status_changed_at;
+    private Date status_changed_at;
 
     public boolean insert() {
         DBConnection connection = DBConnection.getInstance();
-        return connection.executeInsert("INSERT INTO tasks (title, description, status) VALUES ('" + getTitle() + "', '" + getDescription() + "', " + this.status + ")");
+        return connection.executeInsert("INSERT INTO tasks (title, description, status, status_changed_at) VALUES ('" + getTitle() + "', '" + getDescription() + "', " + this.status + ", "+ this.status_changed_at+")");
     }
 
     public boolean delete() {
@@ -58,8 +58,8 @@ public class Task implements BaseModel {
     }
 
     public void setStatus(Status status) {
-        Date now = new Date();
-        this.status_changed_at = new Timestamp(now.getTime());
+        java.util.Date now = new java.util.Date();
+        this.status_changed_at = new Date(now.getTime());
         this.status = StatusTransformer.statusToInt(status);
     }
 
@@ -75,6 +75,6 @@ public class Task implements BaseModel {
         this.created_at = created_at;
     }
 
-    public Timestamp getStatusChangedAt() {        return status_changed_at;
+    public Date getStatusChangedAt() {        return status_changed_at;
     }
 }

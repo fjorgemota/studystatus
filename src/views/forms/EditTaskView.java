@@ -11,21 +11,19 @@ import views.RenderableView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 
-/**
- * Created by aluno on 18/03/15.
- */
-public class EditTaskView extends RenderableView implements ActionListener {
+public class EditTaskView extends RenderableView implements ActionListener, MouseListener {
     private final String SAVE = "SAVE";
     private final String CANCEL = "CANCEL";
     private final String DELETE = "DELETE";
     private final String COMMENT = "COMMENT";
+    private final String DELETE_COMMENT = "DELETE_COMMENT";
+    private final String UPDATE_COMMENT = "UPDATE_COMMENT";
     private Task task;
-    private TaskComment taskComment;
+    private TaskComment comment;
+    private JPanel commentPanel;
 
     protected JTextField titleField;
     protected JScrollPane descriptionField;
@@ -152,12 +150,24 @@ public class EditTaskView extends RenderableView implements ActionListener {
         button.addActionListener(this);
         this.add(button);
 
-        JLabel commentTitle = new JLabel("Comentários:");
+        JButton deleteButton = new JButton("Delete");
+        deleteButton.setBounds(450, 450, 100, 50);
+        deleteButton.setActionCommand(DELETE_COMMENT);
+        deleteButton.addActionListener(this);
+        this.add(deleteButton);
+
+        JButton updateButton = new JButton("Update");
+        updateButton.setBounds(450, 500, 100, 50);
+        updateButton.setActionCommand(UPDATE_COMMENT);
+        updateButton.addActionListener(this);
+        this.add(updateButton);
+
+        JLabel commentTitle = new JLabel("Comments:");
         commentTitle.setFont(commentTitle.getFont().deriveFont(Font.BOLD, 32));
         commentTitle.setBounds(120, 350, 300, 50);
         this.add(commentTitle);
 
-        JPanel commentsPanel = new JPanel();
+        final JPanel commentsPanel = new JPanel();
         this.commentsContainer = new JScrollPane(
                 commentsPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -174,19 +184,18 @@ public class EditTaskView extends RenderableView implements ActionListener {
         TaskCommentRepository repository = new TaskCommentRepository();
         ArrayList<TaskComment> comments = repository.findByTask(this.task);
 
-
-
-
         for(TaskComment comment: comments) {
             JPanel commentPanel = new JPanel();
             commentPanel.setSize(300, 200);
+            commentPanel.setName(comment.getId() + "");
+            commentPanel.addMouseListener(this);
             JTextArea commentText = new JTextArea(comment.getComment());
             commentText.setLocation(5, 5);
             commentText.setMaximumSize(new Dimension(300, 180));
             commentText.setOpaque(false);
             commentText.setBorder(null);
             commentText.setLineWrap(true);
-
+            commentText.setEditable(false);
 
             JLabel commentId = new JLabel("#"+comment.getId());
             commentId.setLocation(5, 5);
@@ -235,7 +244,7 @@ public class EditTaskView extends RenderableView implements ActionListener {
             if(JOptionPane.showConfirmDialog(null, "Do you really want to delete this task?") == JOptionPane.OK_OPTION) {
                 if (this.task.delete()) {
                     JOptionPane.showMessageDialog(null, "Task '"+this.getTitle()+"' deleted successfully! :D");
-                    MainView.getInstance().setContentPane(new KanbanView());
+                    MainView.getInstance().setContentPane(new EditTaskView(this.task));
                 } else {
                     JOptionPane.showMessageDialog(null, "There is an error in the delete of the task '"+this.getTitle()+"'! :(");
                 }
@@ -250,7 +259,61 @@ public class EditTaskView extends RenderableView implements ActionListener {
             } else {
                 JOptionPane.showMessageDialog(null, "There is an error in the insertion of the comment! :(");
             }
-
+        } else if (command.equals(DELETE_COMMENT) && this.comment != null) {
+            if(comment.delete()) {
+                if (JOptionPane.showConfirmDialog(null, "Do you really want to delete this comment?") == JOptionPane.OK_OPTION) {
+                    JOptionPane.showMessageDialog(null, "Comment was deleted successfully!");
+                    this.comment = null;
+                    this.commentPanel = null;
+                    MainView.getInstance().setContentPane(new EditTaskView(this.task));
+                } else {
+                    JOptionPane.showMessageDialog(null, "There is an error in the delete of the comment!");
+                }
+            }
+        } else if (command.equals(DELETE_COMMENT)) {
+            JOptionPane.showMessageDialog(null, "Select a comment to remove");
+        } else if (command.equals(UPDATE_COMMENT)) {
+            JOptionPane.showMessageDialog(null, "Select a comment to update");
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (this.commentPanel != null) {
+            this.commentPanel.setBackground(null);
+        }
+        JPanel source = (JPanel) e.getSource();
+        if (this.commentPanel == source) {
+            this.commentPanel = null;
+            this.comment = null;
+            return;
+        }
+        TaskCommentRepository repository = new TaskCommentRepository();
+        String name = source.getName();
+        TaskComment select = repository.findById(Integer.parseInt(name));
+
+        this.comment = select;
+        this.commentPanel = source;
+        this.commentPanel.setBackground(Color.RED);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }
