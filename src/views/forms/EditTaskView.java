@@ -260,8 +260,8 @@ public class EditTaskView extends RenderableView implements ActionListener, Mous
                 JOptionPane.showMessageDialog(null, "There is an error in the insertion of the comment! :(");
             }
         } else if (command.equals(DELETE_COMMENT) && this.comment != null) {
-            if(comment.delete()) {
-                if (JOptionPane.showConfirmDialog(null, "Do you really want to delete this comment?") == JOptionPane.OK_OPTION) {
+            if (JOptionPane.showConfirmDialog(null, "Do you really want to delete this comment?") == JOptionPane.OK_OPTION) {
+                if (comment.delete()) {
                     JOptionPane.showMessageDialog(null, "Comment was deleted successfully!");
                     this.comment = null;
                     this.commentPanel = null;
