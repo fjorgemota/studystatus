@@ -243,8 +243,8 @@ public class EditTaskView extends RenderableView implements ActionListener, Mous
         } else if (command.equals(DELETE)) {
             if(JOptionPane.showConfirmDialog(null, "Do you really want to delete this task?") == JOptionPane.OK_OPTION) {
                 if (this.task.delete()) {
-                    JOptionPane.showMessageDialog(null, "Task '"+this.getTitle()+"' deleted successfully! :D");
-                    MainView.getInstance().setContentPane(new EditTaskView(this.task));
+                    JOptionPane.showMessageDialog(null, "Task '" + this.getTitle() + "' deleted successfully! :D");
+                    MainView.getInstance().setContentPane(new KanbanView());
                 } else {
                     JOptionPane.showMessageDialog(null, "There is an error in the delete of the task '"+this.getTitle()+"'! :(");
                 }
