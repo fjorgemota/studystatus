@@ -16,7 +16,7 @@ public class Task implements BaseModel {
 
     public boolean insert() {
         DBConnection connection = DBConnection.getInstance();
-        return connection.executeInsert("INSERT INTO tasks (title, description, status, status_changed_at) VALUES ('" + getTitle() + "', '" + getDescription() + "', " + this.status + ", "+ this.status_changed_at+")");
+        return connection.executeInsert("INSERT INTO tasks (title, description, status, status_changed_at) VALUES ('" + getTitle() + "', '" + getDescription() + "', " + this.status + ", '"+ this.status_changed_at+"')");
     }
 
     public boolean delete() {
