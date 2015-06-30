@@ -23,7 +23,7 @@ public class DBConnection {
         return instance;
     }
 
-    public DBConnection()
+    private DBConnection()
     {
         try {
             JdbcDataSource h2 = new JdbcDataSource();
