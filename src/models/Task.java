@@ -75,6 +75,24 @@ public class Task implements BaseModel {
         this.created_at = created_at;
     }
 
-    public Date getStatusChangedAt() {        return status_changed_at;
+    public Date getStatusChangedAt() {
+        return status_changed_at;
+    }
+
+    @Override
+    public String validate() {
+        if (this.getTitle() == null || this.getTitle().trim().isEmpty()) {
+            return "The title cannot be empty!";
+        }
+        if (this.getTitle().length() > 50) {
+            return "The title should have less than 50 characters!";
+        }
+        if (this.getDescription() == null || this.getDescription().trim().isEmpty()) {
+            return "The description cannot be empty!";
+        }
+        if (this.getDescription().length() > 100) {
+            return "The description should have less than 100 characters!";
+        }
+        return null;
     }
 }

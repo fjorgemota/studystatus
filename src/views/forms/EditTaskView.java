@@ -232,7 +232,11 @@ public class EditTaskView extends RenderableView implements ActionListener, Mous
             this.task.setTitle(this.getTitle());
             this.task.setDescription(this.getDescription());
             this.task.setStatus(this.getStatus());
-            if (this.task.update()) {
+            String validationError = this.task.validate();
+            if (validationError != null) {
+                JOptionPane.showMessageDialog(null, validationError);
+            }
+            else if (this.task.update()) {
                 JOptionPane.showMessageDialog(null, "Task '"+this.getTitle()+"' updated successfully! :D");
                 MainView.getInstance().setContentPane(new KanbanView());
             } else {
@@ -253,7 +257,11 @@ public class EditTaskView extends RenderableView implements ActionListener, Mous
             TaskComment comment = new TaskComment();
             comment.setTaskId(this.task.getId());
             comment.setComment(this.getComment());
-            if (comment.insert()) {
+            String validationError = comment.validate();
+            if (validationError != null) {
+                JOptionPane.showMessageDialog(null, validationError);
+            }
+            else if (comment.insert()) {
                 JOptionPane.showMessageDialog(null, "Comment inserted successfully! :D");
                 MainView.getInstance().setContentPane(new EditTaskView(this.task));
             } else {

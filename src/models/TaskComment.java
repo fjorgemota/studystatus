@@ -4,7 +4,7 @@ import db.DBConnection;
 
 public class TaskComment implements BaseModel {
 	private String comment;
-	private int task_id;
+	private int task_id = -1;
 	private int id;
 
 	public boolean insert() {
@@ -44,5 +44,19 @@ public class TaskComment implements BaseModel {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	@Override
+	public String validate() {
+		if (this.comment == null || this.comment.trim().isEmpty()) {
+			return "This comment text should be empty!";
+		}
+        if (this.comment.length() > 100) {
+            return "This comment should have less than 100 characters!";
+        }
+		if (this.task_id < 1) {
+			return "This comment should be associated with a task!";
+		}
+		return null;
 	}
 }

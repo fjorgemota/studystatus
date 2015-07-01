@@ -128,7 +128,11 @@ public class AddTaskView extends RenderableView implements ActionListener {
         String command = e.getActionCommand();
         if (command.equals(SAVE)) {
             Task task = this.getTask();
-            if (task.insert()) {
+            String validationError = task.validate();
+            if (validationError != null) {
+                JOptionPane.showMessageDialog(null, validationError);
+            }
+            else if (task.insert()) {
                 JOptionPane.showMessageDialog(null, "Task '"+this.getTitle()+"' inserted successfully! :D");
                 MainView.getInstance().setContentPane(new KanbanView());
             } else {

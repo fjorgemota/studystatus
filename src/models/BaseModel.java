@@ -4,4 +4,5 @@ public interface BaseModel {
     public boolean insert();
     public boolean delete();
     public boolean update();
+    public String validate();
 }
